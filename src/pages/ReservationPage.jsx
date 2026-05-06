@@ -47,7 +47,7 @@ export default function ReservationPage() {
   const selectedAccommodation = ACCOMMODATION_LIST.find(
     (a) => a.id === draft.accommodationId,
   )
-  const minNoitesLabel = rulesFootnote(selectedAccommodation)
+  const minNightsLabel = rulesFootnote(selectedAccommodation)
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -67,7 +67,7 @@ export default function ReservationPage() {
         accommodationId: snapshot.accommodationId,
         checkIn: snapshot.checkIn,
         checkOut: snapshot.checkOut,
-        adultos: adults,
+        adults,
       })
 
       setPending(false)
@@ -125,7 +125,7 @@ export default function ReservationPage() {
 
       <ReservationSummary
         result={successResult}
-        minNoitesLabel={minNoitesLabel}
+        minNightsLabel={minNightsLabel}
       />
     </div>
   )

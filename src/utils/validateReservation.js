@@ -10,7 +10,7 @@ export function validateReservation({
   accommodationId,
   checkIn,
   checkOut,
-  adultos,
+  adults,
 }) {
   const accommodation = ACCOMMODATIONS[accommodationId]
   if (!accommodation) {
@@ -23,15 +23,15 @@ export function validateReservation({
     return { ok: false, error: RESERVATION_ERRORS.datesRequired }
   }
 
-  const adults = Number(adultos)
-  if (!Number.isFinite(adults) || adults < 1) {
+  const adultsNum = Number(adults)
+  if (!Number.isFinite(adultsNum) || adultsNum < 1) {
     return {
       ok: false,
       error: RESERVATION_ERRORS.adultsInvalid,
     }
   }
 
-  if (!Number.isInteger(adults)) {
+  if (!Number.isInteger(adultsNum)) {
     return {
       ok: false,
       error: RESERVATION_ERRORS.adultsNotInteger,
@@ -75,7 +75,7 @@ export function validateReservation({
       checkIn: start,
       checkOut: end,
       nights,
-      adults,
+      adults: adultsNum,
     },
   }
 }

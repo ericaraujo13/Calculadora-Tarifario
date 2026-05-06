@@ -23,15 +23,15 @@ describe('parseISODateLocal', () => {
 describe('countNightTypes', () => {
   it('counts zero weekends in consecutive weekdays', () => {
     const checkIn = parseISODateLocal('2026-06-01')
-    const { noitesFimDeSemana, noitesUteis } = countNightTypes(checkIn, 2)
-    expect(noitesFimDeSemana).toBe(0)
-    expect(noitesUteis).toBe(2)
+    const { weekendNights, weekdayNights } = countNightTypes(checkIn, 2)
+    expect(weekendNights).toBe(0)
+    expect(weekdayNights).toBe(2)
   })
 
   it('counts Saturday and Sunday as weekends', () => {
     const checkIn = parseISODateLocal('2026-06-06')
-    const { noitesFimDeSemana, noitesUteis } = countNightTypes(checkIn, 2)
-    expect(noitesFimDeSemana).toBe(2)
-    expect(noitesUteis).toBe(0)
+    const { weekendNights, weekdayNights } = countNightTypes(checkIn, 2)
+    expect(weekendNights).toBe(2)
+    expect(weekdayNights).toBe(0)
   })
 })

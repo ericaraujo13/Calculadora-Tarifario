@@ -8,13 +8,13 @@ describe('calculateTarifario', () => {
       accommodationId: 'suite_jardim',
       checkIn: '2026-06-01',
       checkOut: '2026-06-03',
-      adultos: 2,
+      adults: 2,
     })
     expect(r.ok).toBe(true)
-    expect(r.valorDiarias).toBe(600)
-    expect(r.taxaLimpeza).toBe(80)
+    expect(r.nightlyRatesTotal).toBe(600)
+    expect(r.cleaningFee).toBe(80)
     expect(r.totalFinal).toBe(680)
-    expect(r.noitesFimDeSemana).toBe(0)
+    expect(r.weekendNights).toBe(0)
   })
 
   it('weekend in the Suite: 360+360 + 80', () => {
@@ -22,12 +22,12 @@ describe('calculateTarifario', () => {
       accommodationId: 'suite_jardim',
       checkIn: '2026-06-06',
       checkOut: '2026-06-08',
-      adultos: 2,
+      adults: 2,
     })
     expect(r.ok).toBe(true)
-    expect(r.valorDiarias).toBe(720)
+    expect(r.nightlyRatesTotal).toBe(720)
     expect(r.totalFinal).toBe(800)
-    expect(r.noitesFimDeSemana).toBe(2)
+    expect(r.weekendNights).toBe(2)
   })
 
   it('extra adults in the Suite', () => {
@@ -35,13 +35,13 @@ describe('calculateTarifario', () => {
       accommodationId: 'suite_jardim',
       checkIn: '2026-06-01',
       checkOut: '2026-06-03',
-      adultos: 3,
+      adults: 3,
     })
     expect(r.ok).toBe(true)
-    expect(r.adultosAcimaCapacidade).toBe(1)
-    expect(r.valorAdultosExtras).toBe(100)
-    expect(r.valorDiariasAcomodacao).toBe(600)
-    expect(r.valorDiarias).toBe(700)
+    expect(r.extraAdultsCount).toBe(1)
+    expect(r.extraAdultsAmount).toBe(100)
+    expect(r.accommodationNightlyAmount).toBe(600)
+    expect(r.nightlyRatesTotal).toBe(700)
     expect(r.totalFinal).toBe(780)
   })
 
@@ -50,13 +50,13 @@ describe('calculateTarifario', () => {
       accommodationId: 'chale_familia',
       checkIn: '2026-06-01',
       checkOut: '2026-06-09',
-      adultos: 2,
+      adults: 2,
     })
     expect(r.ok).toBe(true)
     expect(r.nights).toBe(8)
-    expect(r.aplicouDescontoLongaEstadia).toBe(true)
-    expect(r.valorDiarias).toBe(3780)
-    expect(r.taxaLimpeza).toBe(100)
+    expect(r.longStayDiscountApplied).toBe(true)
+    expect(r.nightlyRatesTotal).toBe(3780)
+    expect(r.cleaningFee).toBe(100)
     expect(r.subtotalBeforeDiscount).toBe(3880)
     expect(r.longStayDiscountAmount).toBe(388)
     expect(r.totalFinal).toBe(3492)
@@ -67,23 +67,23 @@ describe('calculateTarifario', () => {
       accommodationId: 'suite_jardim',
       checkIn: '2026-06-10',
       checkOut: '2026-06-05',
-      adultos: 2,
+      adults: 2,
     })
     expect(r.ok).toBe(false)
     expect(r.error).toBeDefined()
   })
 })
 
-describe('diariaCadastro vs ACCOMMODATIONS.dailyRate', () => {
-  it('expõe diária de cadastro alinhada ao dailyRate da acomodação', () => {
+describe('accommodationDailyRate vs ACCOMMODATIONS.dailyRate', () => {
+  it('exposes accommodationDailyRate aligned with accommodation dailyRate', () => {
     const r = calculateTarifario({
       accommodationId: 'chale_familia',
       checkIn: '2026-06-01',
       checkOut: '2026-06-03',
-      adultos: 2,
+      adults: 2,
     })
     expect(r.ok).toBe(true)
-    expect(r.diariaCadastro).toBe(ACCOMMODATIONS.chale_familia.dailyRate)
+    expect(r.accommodationDailyRate).toBe(ACCOMMODATIONS.chale_familia.dailyRate)
     expect(r.accommodationName).toBe('Chalé Família')
   })
 })

@@ -2,24 +2,24 @@ import { EXTRA_ADULT_RATE_PER_NIGHT } from '../data/tariffRules.js'
 import { formatMoney } from '../utils/formatMoney.js'
 
 function WeekendHintInline({ result }) {
-  if (result.noitesFimDeSemana <= 0) return null
+  if (result.weekendNights <= 0) return null
   return (
     <span className="ui-hint-inline-muted">
-      +{result.percentualFimDeSemana}% em {result.noitesFimDeSemana} noite(s) de
+      +{result.weekendSurchargePercent}% em {result.weekendNights} noite(s) de
       fim de semana
     </span>
   )
 }
 
 function MoneyWithWeekendHint({ amount, result }) {
-  const fds = result.noitesFimDeSemana > 0
+  const hasWeekendSurcharge = result.weekendNights > 0
 
   return (
     <div className="ui-value-stack">
       <div className="ui-value-line">
         <span className="tabular-nums">{formatMoney(amount)}</span>
       </div>
-      {fds ? (
+      {hasWeekendSurcharge ? (
         <p className="ui-hint-below-muted">
           <WeekendHintInline result={result} />
         </p>
@@ -29,8 +29,8 @@ function MoneyWithWeekendHint({ amount, result }) {
 }
 
 function MoneyWithExtrasHint({ amount, result }) {
-  const n = result.adultosAcimaCapacidade
-  const adultosLabel =
+  const n = result.extraAdultsCount
+  const extraAdultsLabel =
     n === 1 ? '1 adulto extra' : `${n} adultos extras`
 
   return (
@@ -38,7 +38,7 @@ function MoneyWithExtrasHint({ amount, result }) {
       <div className="ui-value-line">
         <span className="tabular-nums">{formatMoney(amount)}</span>
         <span className="ui-hint-inline-muted">
-          ({adultosLabel} × {formatMoney(EXTRA_ADULT_RATE_PER_NIGHT)} ×{' '}
+          ({extraAdultsLabel} × {formatMoney(EXTRA_ADULT_RATE_PER_NIGHT)} ×{' '}
           {result.nights} diárias)
         </span>
       </div>
@@ -46,8 +46,8 @@ function MoneyWithExtrasHint({ amount, result }) {
   )
 }
 
-function TotalDiariasPainel({ result }) {
-  const { valorDiarias, valorDiariasAcomodacao, valorAdultosExtras } = result
+function NightlyRatesPanel({ result }) {
+  const { nightlyRatesTotal, accommodationNightlyAmount, extraAdultsAmount } = result
 
   return (
     <div className="w-full max-w-sm">
@@ -61,7 +61,7 @@ function TotalDiariasPainel({ result }) {
               Diárias da acomodação
             </th>
             <td className="whitespace-nowrap py-1.5 text-right tabular-nums">
-              {formatMoney(valorDiariasAcomodacao)}
+              {formatMoney(accommodationNightlyAmount)}
             </td>
           </tr>
           <tr>
@@ -72,7 +72,7 @@ function TotalDiariasPainel({ result }) {
               Adultos extras
             </th>
             <td className="whitespace-nowrap py-1.5 text-right tabular-nums">
-              {formatMoney(valorAdultosExtras)}
+              {formatMoney(extraAdultsAmount)}
             </td>
           </tr>
           <tr className="border-t border-slate-200 dark:border-slate-700">
@@ -83,14 +83,14 @@ function TotalDiariasPainel({ result }) {
               Total
             </th>
             <td className="whitespace-nowrap pt-2 text-right font-semibold tabular-nums text-slate-900 dark:text-slate-100">
-              {formatMoney(valorDiarias)}
+              {formatMoney(nightlyRatesTotal)}
             </td>
           </tr>
         </tbody>
       </table>
-      {result.noitesFimDeSemana > 0 ? (
+      {result.weekendNights > 0 ? (
         <p className="ui-hint-below-muted mt-2 max-w-none">
-          O +{result.percentualFimDeSemana}% em sábados e domingos incide só sobre
+          O +{result.weekendSurchargePercent}% em sábados e domingos incide só sobre
           a diária da acomodação (já refletido na primeira linha).
         </p>
       ) : null}
@@ -98,10 +98,10 @@ function TotalDiariasPainel({ result }) {
   )
 }
 
-export default function ReservationSummary({ result, minNoitesLabel }) {
+export default function ReservationSummary({ result, minNightsLabel }) {
   if (!result?.ok) return null
 
-  const temExtras = result.adultosAcimaCapacidade > 0
+  const hasExtras = result.extraAdultsCount > 0
 
   return (
     <section
@@ -120,10 +120,10 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
         </div>
         <div className="ui-row">
           <dt className="ui-row-label-muted">Diária da acomodação</dt>
-          <dd className="ui-row-value-muted">{formatMoney(result.diariaCadastro)}</dd>
+          <dd className="ui-row-value-muted">{formatMoney(result.accommodationDailyRate)}</dd>
         </div>
 
-        {temExtras ? (
+        {hasExtras ? (
           <div className="ui-panel">
             <p className="ui-panel-heading">Valores das diárias</p>
             <div className="mt-3 space-y-3">
@@ -133,7 +133,7 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
                 </dt>
                 <dd>
                   <MoneyWithWeekendHint
-                    amount={result.valorDiariasAcomodacao}
+                    amount={result.accommodationNightlyAmount}
                     result={result}
                   />
                 </dd>
@@ -144,7 +144,7 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
                 </dt>
                 <dd>
                   <MoneyWithExtrasHint
-                    amount={result.valorAdultosExtras}
+                    amount={result.extraAdultsAmount}
                     result={result}
                   />
                 </dd>
@@ -155,7 +155,7 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
                     Total em diárias
                   </dt>
                   <dd>
-                    <TotalDiariasPainel result={result} />
+                    <NightlyRatesPanel result={result} />
                   </dd>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
             <dt className="ui-row-label">Valor das diárias</dt>
             <dd>
               <MoneyWithWeekendHint
-                amount={result.valorDiarias}
+                amount={result.nightlyRatesTotal}
                 result={result}
               />
             </dd>
@@ -175,15 +175,15 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
 
         <div className="ui-row">
           <dt className="ui-row-label">Taxa de limpeza</dt>
-          <dd className="ui-row-value tabular-nums">{formatMoney(result.taxaLimpeza)}</dd>
+          <dd className="ui-row-value tabular-nums">{formatMoney(result.cleaningFee)}</dd>
         </div>
-        {result.aplicouDescontoLongaEstadia ? (
+        {result.longStayDiscountApplied ? (
           <div className="ui-row">
             <dt className="ui-row-label-muted">Subtotal antes do desconto</dt>
             <dd className="ui-row-value-muted">{formatMoney(result.subtotalBeforeDiscount)}</dd>
           </div>
         ) : null}
-        {result.aplicouDescontoLongaEstadia ? (
+        {result.longStayDiscountApplied ? (
           <div className="ui-row">
             <dt className="ui-row-label">Desconto longa estadia (10%)</dt>
             <dd className="text-right font-medium tabular-nums text-teal-700 dark:text-teal-300">
@@ -196,7 +196,7 @@ export default function ReservationSummary({ result, minNoitesLabel }) {
           <dd className="ui-total-final-value">{formatMoney(result.totalFinal)}</dd>
         </div>
       </dl>
-      <p className="ui-footnote">{minNoitesLabel}</p>
+      <p className="ui-footnote">{minNightsLabel}</p>
     </section>
   )
 }

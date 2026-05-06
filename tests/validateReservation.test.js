@@ -6,7 +6,7 @@ const suite = {
   accommodationId: 'suite_jardim',
   checkIn: '2026-06-01',
   checkOut: '2026-06-03',
-  adultos: 2,
+  adults: 2,
 }
 
 describe('validateReservation', () => {
@@ -37,7 +37,7 @@ describe('validateReservation', () => {
   })
 
   it('rejects non-integer adults', () => {
-    const v = validateReservation({ ...suite, adultos: 2.5 })
+    const v = validateReservation({ ...suite, adults: 2.5 })
     expect(v.ok).toBe(false)
     expect(v.error).toBe(RESERVATION_ERRORS.adultsNotInteger)
   })

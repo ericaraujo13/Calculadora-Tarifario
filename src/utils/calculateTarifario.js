@@ -18,29 +18,29 @@ export function calculateReservation(input) {
 
   const { accommodation, checkIn, nights, adults } = validated.value
 
-  const { noitesFimDeSemana, noitesUteis } = countNightTypes(checkIn, nights)
-  const valorAcrecimoFimDeSemana =
-    noitesFimDeSemana * accommodation.dailyRate * WEEKEND_SURCHARGE_RATE
+  const { weekendNights, weekdayNights } = countNightTypes(checkIn, nights)
+  const weekendSurchargeAmount =
+    weekendNights * accommodation.dailyRate * WEEKEND_SURCHARGE_RATE
 
-  const valorDiarias = calculateNightlyRatesTotal(
+  const nightlyRatesTotal = calculateNightlyRatesTotal(
     accommodation,
     checkIn,
     nights,
     adults,
   )
 
-  const adultosAcimaCapacidade = Math.max(
+  const extraAdultsCount = Math.max(
     0,
     adults - accommodation.maxAdults,
   )
-  const valorAdultosExtras =
-    adultosAcimaCapacidade * EXTRA_ADULT_RATE_PER_NIGHT * nights
-  const valorDiariasAcomodacao = valorDiarias - valorAdultosExtras
+  const extraAdultsAmount =
+    extraAdultsCount * EXTRA_ADULT_RATE_PER_NIGHT * nights
+  const accommodationNightlyAmount = nightlyRatesTotal - extraAdultsAmount
 
-  const taxaLimpeza = calculateCleaningFee(accommodation)
-  const subtotalBeforeDiscount = valorDiarias + taxaLimpeza
+  const cleaningFee = calculateCleaningFee(accommodation)
+  const subtotalBeforeDiscount = nightlyRatesTotal + cleaningFee
 
-  const { discountAmount: longStayDiscountAmount, applies: aplicouDescontoLongaEstadia } =
+  const { discountAmount: longStayDiscountAmount, applies: longStayDiscountApplied } =
     calculateDiscount(subtotalBeforeDiscount, nights)
 
   const totalFinal = subtotalBeforeDiscount - longStayDiscountAmount
@@ -48,21 +48,21 @@ export function calculateReservation(input) {
   return {
     ok: true,
     accommodationName: accommodation.name,
-    diariaCadastro: accommodation.dailyRate,
+    accommodationDailyRate: accommodation.dailyRate,
     nights,
-    noitesUteis,
-    noitesFimDeSemana,
-    valorAcrecimoFimDeSemana,
-    percentualFimDeSemana: Math.round(WEEKEND_SURCHARGE_RATE * 100),
-    valorDiarias,
-    valorDiariasAcomodacao,
-    adultosAcimaCapacidade,
-    valorAdultosExtras,
-    taxaLimpeza,
+    weekdayNights,
+    weekendNights,
+    weekendSurchargeAmount,
+    weekendSurchargePercent: Math.round(WEEKEND_SURCHARGE_RATE * 100),
+    nightlyRatesTotal,
+    accommodationNightlyAmount,
+    extraAdultsCount,
+    extraAdultsAmount,
+    cleaningFee,
     subtotalBeforeDiscount,
     longStayDiscountAmount,
     totalFinal,
-    aplicouDescontoLongaEstadia,
+    longStayDiscountApplied,
   }
 }
 

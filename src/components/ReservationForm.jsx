@@ -17,7 +17,7 @@ export default function ReservationForm({
     (a) => a.id === draft.accommodationId,
   )
   const adultsNum = draft.adults === '' ? NaN : Number(draft.adults)
-  const adultosExtrasPreview =
+  const extraAdultsPreview =
     Number.isFinite(adultsNum) && selectedAcc
       ? Math.max(0, adultsNum - selectedAcc.maxAdults)
       : 0
@@ -65,7 +65,7 @@ export default function ReservationForm({
           step={1}
           value={draft.adults === '' ? '' : draft.adults}
           aria-describedby={
-            adultosExtrasPreview > 0 ? 'extras-preview-hint' : undefined
+            extraAdultsPreview > 0 ? 'extras-preview-hint' : undefined
           }
           onChange={(e) =>
             patchDraft({
@@ -74,12 +74,12 @@ export default function ReservationForm({
             })
           }
         />
-        {adultosExtrasPreview > 0 ? (
+        {extraAdultsPreview > 0 ? (
           <span
             id="extras-preview-hint"
             className="ui-hint"
           >
-            Serão cobrados {adultosExtrasPreview} adulto(s) extra(s):{' '}
+            Serão cobrados {extraAdultsPreview} adulto(s) extra(s):{' '}
             {formatMoney(EXTRA_ADULT_RATE_PER_NIGHT)} por noite cada (entra no
             total das diárias).
           </span>

@@ -22,14 +22,14 @@ export function isWeekendNight(date) {
 }
 
 export function countNightTypes(checkInDate, nights) {
-  let noitesFimDeSemana = 0
+  let weekendNights = 0
   for (let i = 0; i < nights; i++) {
     const d = new Date(checkInDate.getTime() + i * MS_PER_DAY)
-    if (isWeekendNight(d)) noitesFimDeSemana++
+    if (isWeekendNight(d)) weekendNights++
   }
   return {
-    noitesFimDeSemana,
-    noitesUteis: nights - noitesFimDeSemana,
+    weekendNights,
+    weekdayNights: nights - weekendNights,
   }
 }
 
