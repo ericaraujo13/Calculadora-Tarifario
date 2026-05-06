@@ -69,3 +69,22 @@ src/
 tests/                    # Testes Vitest (imports com ../src/...)
   *.test.js
 ```
+
+## Video da explicação da solução do desafio
+
+Os videos foram separados em 3 partes devido a limitação do Loom gravar somente 5 minutos no plano free 
+
+Segue os links 
+
+Parte 1 
+
+https://www.loom.com/share/438129d1ed3d4b27804dea1ea5e14dfa
+
+Parte 2 
+
+https://www.loom.com/share/1e184d816f0e489a9aabb20cbaf9dcd2
+
+Parte 3 
+
+https://www.loom.com/share/e5c9455430db42bfbf1afdaf62b675a2
+
