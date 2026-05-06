@@ -44,7 +44,9 @@ export default function ReservationPage() {
     }
   }, [])
 
-  const selectedAccommodation = ACCOMMODATIONS[draft.accommodationId]
+  const selectedAccommodation = ACCOMMODATION_LIST.find(
+    (a) => a.id === draft.accommodationId,
+  )
   const minNoitesLabel = rulesFootnote(selectedAccommodation)
 
   function handleSubmit(e) {

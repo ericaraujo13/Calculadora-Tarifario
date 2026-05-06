@@ -1,4 +1,3 @@
-import { ACCOMMODATIONS } from '../data/accommodations.js'
 import DateRangeFields from './DateRangeFields.jsx'
 import { EXTRA_ADULT_RATE_PER_NIGHT } from '../data/tariffRules.js'
 import { formatMoney } from '../utils/formatMoney.js'
@@ -14,7 +13,9 @@ export default function ReservationForm({
     onDraftChange((prev) => ({ ...prev, ...partial }))
   }
 
-  const selectedAcc = ACCOMMODATIONS[draft.accommodationId]
+  const selectedAcc = accommodationsList.find(
+    (a) => a.id === draft.accommodationId,
+  )
   const adultsNum = draft.adults === '' ? NaN : Number(draft.adults)
   const adultosExtrasPreview =
     Number.isFinite(adultsNum) && selectedAcc
